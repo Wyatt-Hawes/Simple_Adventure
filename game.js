@@ -97,12 +97,100 @@ class Intro extends Phaser.Scene {
         super('intro')
     }
     create() {
-        this.add.text(50,50, "Adventure awaits!").setFontSize(50);
-        this.add.text(50,100, "Click anywhere to begin.").setFontSize(20);
+        //this.add.text(50,50, "Adventure awaits!").setFontSize(50);
+        this.add.text(200,400, "Click anywhere to begin.").setFontSize(100);
         this.input.on('pointerdown', () => {
             this.cameras.main.fade(1000, 0,0,0);
-            this.time.delayedCall(1000, () => this.scene.start('demo1'));
+            this.time.delayedCall(1000, () => this.scene.start('keybreak'));
         });
+    }
+}
+class keyBreak extends AdventureScene{
+    constructor(){
+        super('keybreak')
+    }
+    
+    preload(){
+        this.load.path = './assets/';
+        this.load.image('key_head', 'key_head.png');
+        this.load.image('key_body', 'key_body.png');
+        this.load.image('key_blade', 'key_blade.png');
+    }
+    create(){
+        this.cameras.main.fadeIn(3000, 255,255,255);
+        this.cameras.main.setBackgroundColor('#EAEAEA');
+        //this.add.sprite(400,300, 'key_head');
+        this.key = this.add.container(800,-280);
+
+
+        let head = this.add.sprite(40-100,50-15, 'key_head');
+        let body = this.add.sprite(232-100,50-15, 'key_body');
+        let blade = this.add.sprite(283-100,15-15, 'key_blade');
+
+        this.key.add(head);
+        this.key.add(body);
+        this.key.add(blade);
+
+
+        let brk = this.tweens.add({
+            targets: this.key,
+            repeat: 0,
+            duratiom: 1000,
+            delay: 1000,
+            paused: false,
+            ease: 'circ.easeOut',
+            x: 800,
+            y: 400,
+            onComplete: function(){
+                s.paused = false;
+            }
+
+        });
+        let s = this.tweens.add({
+            targets: this.key,
+            repeat: 0,
+            scale:2,
+            duration: 3000,
+            paused: true,
+            onComplete: function(){
+                shk.paused = false;
+            }
+        });
+        let shk = this.tweens.add({
+            targets: this.key,
+            repeat: 15,
+            angle: {from: -5, to: 5},
+            yoyo: true,
+            duration: 50,
+            paused: true,
+            onComplete: function(){
+                brk1.paused = false;
+                brk2.paused = false;
+                brk3.paused = false;
+            }
+        })
+        let brk1 = this.tweens.add({
+            targets: head,
+            x:  -1000 * (Math.random() + 0.3) ,
+            y:  1000 * (Math.random() + 0.3),
+            paused: true 
+        });
+        let brk2 = this.tweens.add({
+            targets: body,
+            x:  1000 * (Math.random() + 0.3) ,
+            y:  -1000 * (Math.random() + 0.3),
+            paused: true 
+        });
+        let brk3 = this.tweens.add({
+            targets: blade,
+            x:  1000 * (Math.random() + 0.3) ,
+            y:  1000 * (Math.random() + 0.3),
+            paused: true 
+        });
+    }
+    
+
+    update(){
     }
 }
 
@@ -125,7 +213,7 @@ const game = new Phaser.Game({
         width: 1920,
         height: 1080
     },
-    scene: [Intro, Demo1, Demo2, Outro],
+    scene: [keyBreak, Intro, Demo2, Outro],
     title: "Adventure Game",
 });
 
