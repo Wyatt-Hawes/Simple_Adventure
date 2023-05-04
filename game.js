@@ -204,7 +204,7 @@ class keyBreak extends AdventureScene{
     update(){
     }
 }
-
+let anim = 0;
 class Menu extends AdventureScene{
     constructor() {
         super('menu');
@@ -214,74 +214,231 @@ class Menu extends AdventureScene{
         this.load.image('puz1', '1.jpg');
         this.load.image('puz2', '2.jpg');
         this.load.image('puz3', '4.jpg');
+        if (anim == 0){
+            this.load.image('key_head', 'key_head.png');
+            this.load.image('key_body', 'key_body.png');
+            this.load.image('key_blade', 'key_blade.png');
+        }
     }
 
     create(){
         this.cameras.main.setBackgroundColor('#EAEAEA');
 
-        // this.rotate = this.add.container(this.cameras.main.worldView.x, this.cameras.main.worldView.y);
-        // let p1 = this.add.sprite(0,0, 'puz1');
-        // p1.setScale(.5);
-
-        // let p2 = this.add.sprite(800,200, 'puz2');
-        // p2.setScale(.25);
-
-        // let p3 = this.add.sprite(800,700, 'puz3');
-        // p3.setScale(.25);
-
-        //From https://phaser.discourse.group/t/how-to-create-circular-movement-motion-for-a-gameobject-with-arcade-physics/8324/4
+        //based off of https://phaser.discourse.group/t/how-to-create-circular-movement-motion-for-a-gameobject-with-arcade-physics/8324/4
         var graphics = this.add.graphics().lineStyle(1, 0xFF0000, 0.5);
         // A circle curve starts at angle 0, the "3 o'clock" position.
         // Make a circle path of radius 200 starting from (600, 200)
-        var path1 = new Phaser.Curves.Path(900, 500).ellipseTo(400,400, 0, 360, false, 0);
-        var path2 = new Phaser.Curves.Path(300, 845).ellipseTo(400,400, 0, 360, false, 120);
-        var path3 = new Phaser.Curves.Path(300, 153).ellipseTo(400,400, 0, 360, false, 240);
+        var path1 = new Phaser.Curves.Path(900, 500).ellipseTo(300,300, 0, 360, false, 0);
+        var path2 = new Phaser.Curves.Path(450, 760).ellipseTo(300,300, 0, 360, false, 120);
+        var path3 = new Phaser.Curves.Path(450, 240).ellipseTo(300,300, 0, 360, false, 240);
+
         //path1.draw(graphics, 128);
         //path2.draw(graphics, 128);
         //path3.draw(graphics, 128);
 
         var b1 = this.add.follower(path1, 900, 500, 'puz1');
+        b1.setInteractive({});
         b1.setScale(.25);
-        var b2 = this.add.follower(path2, 300, 845, 'puz2');
+        var b2 = this.add.follower(path2, 450, 760, 'puz2');
+        b2.setInteractive({});
         b2.setScale(.25);
-        var b3 = this.add.follower(path3, 300, 153, 'puz3');
+        var b3 = this.add.follower(path3, 450, 240, 'puz3');
+        b3.setInteractive({});
         b3.setScale(.25);
-        {
+        
             //block.setScale(.25);
             // Physics
             this.physics.add.existing(b1);
             //this.physics.add.existing(b2);
-           //this.physics.add.existing(b3);
-            // Prevent drift?
-            //b1.body.moves = false;
-            b1.startFollow({
-                duration: 10000,
-                yoyo: false,
-                loop: -1,
-                onStart: function () {
-                path1.getPoint(0, b1.pathVector);
+        
+        
+        let me = this;
+        //b1
+        {
+        b1.on('pointerdown', (pointer, dragX, dragY) => {
+            console.log("clicked 1!");
+        });
+
+
+        b1.on('pointerover', () => {
+            me.add.tween({
+                targets: b1,
+                duration: 70,
+                scale: .28,
+            });
+        });
+        b1.on('pointerout', () => {
+            me.add.tween({
+                targets: b1,
+                duration: 70,
+                scale: .25,
+            });
+        });
+        }   
+
+        //b2
+        {
+        b2.on('pointerdown', (pointer, dragX, dragY) => {
+            console.log("clicked 2!");
+        });
+        b2.on('pointerover', () => {
+            me.add.tween({
+                targets: b2,
+                duration: 70,
+                scale: .28,
+            });
+        });
+        b2.on('pointerout', () => {
+            me.add.tween({
+                targets: b2,
+                duration: 70,
+                scale: .25,
+            });
+        });
+        
+        }
+
+        //b3
+        {
+        b3.on('pointerdown', (pointer, dragX, dragY) => {
+            console.log("clicked 3!");
+        });
+        b3.on('pointerover', () => {
+            me.add.tween({
+                targets: b3,
+                duration: 70,
+                scale: .28,
+            });
+        });
+        b3.on('pointerout', () => {
+            me.add.tween({
+                targets: b3,
+                duration: 70,
+                scale: .25,
+            });
+        });
+
+        }
+        if(anim == 0){
+            let head = this.add.sprite(-300,-200, 'key_head');
+            let body = this.add.sprite(2000,-50, 'key_body');
+            let blade = this.add.sprite(800,-300, 'key_blade');
+
+            this.tweens.add({
+                targets: head,
+                repeat: 0,
+                duratiom: 500,
+                delay: 1000,
+                paused: false,
+                ease: 'circ.easeOut',
+                x: b1.x,
+                y: b1.y,
+                onComplete: function(){
+                    //console.log("a");
+                    f1.paused = false;
+                }
+                
+            });
+
+            let f1 = this.tweens.add({
+                targets: head,
+                repeat: 0,
+                duration: 2000,
+                delay: 250,
+                alpha: 0,
+                paused: true,
+                onComplete: function(){
+                    setTimeout(() => {
+                        b1.startFollow({
+                            duration: 10000,
+                            yoyo: false,
+                            loop: -1,
+                            onStart: function () {
+                            path1.getPoint(0, b1.pathVector);
+                            }
+                        });
+
+                    }, 300);
                 }
             });
-            //b2.body.moves = false;
-            b2.startFollow({
-            //delay: 3334,
-            duration: 10000,
-            yoyo: false,
-            loop: -1,
-            onStart: function () {
-            path2.getPoint(0, b2.pathVector);
-            }});
 
-            //b3.body.moves = false;
-            b3.startFollow({
-            //delay: 6667,
-            duration: 10000,
-            yoyo: false,
-            loop: -1,
-            onStart: function () {
-            path3.getPoint(0, b3.pathVector);
-            }
-        });
+            this.tweens.add({
+                targets: body,
+                repeat: 0,
+                duratiom: 500,
+                delay: 1000,
+                paused: false,
+                ease: 'circ.easeOut',
+                x: b2.x,
+                y: b2.y,
+                onComplete: function(){
+                    //console.log("a");
+                    f2.paused = false;
+                }
+                
+            });
+
+            let f2 = this.tweens.add({
+                targets: body,
+                repeat: 0,
+                delay: 250,
+                duration: 2000,
+                alpha: 0,
+                paused: true,
+                onComplete: function(){
+                    setTimeout(() => {
+                        b2.startFollow({
+                            duration: 10000,
+                            yoyo: false,
+                            loop: -1,
+                            onStart: function () {
+                            path1.getPoint(0, b1.pathVector);
+                            }
+                        });
+
+                    }, 300);
+                }
+            });
+
+            this.tweens.add({
+                targets: blade,
+                repeat: 0,
+                delay: 250,
+                duration: 1000,
+                delay: 1000,
+                paused: false,
+                ease: 'circ.easeOut',
+                x: b3.x,
+                y: b3.y,
+                onComplete: function(){
+                    //console.log("a");
+                    f3.paused = false;
+                }
+                
+            });
+
+            let f3 = this.tweens.add({
+                targets: blade,
+                repeat: 0,
+                delay: 250,
+                duration: 2000,
+                alpha: 0,
+                paused: true,
+                onComplete: function(){
+                    setTimeout(() => {
+                        b3.startFollow({
+                            duration: 10000,
+                            yoyo: false,
+                            loop: -1,
+                            onStart: function () {
+                            path1.getPoint(0, b1.pathVector);
+                            }
+                        });
+
+                    }, 300);
+                }
+            });
+
         }
 
     }
