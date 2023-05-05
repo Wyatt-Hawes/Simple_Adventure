@@ -115,7 +115,30 @@ class AdventureScene extends Phaser.Scene {
             }
         }
     }
-
+    setupObject(circ, Circ, name){
+        map1.set(name, 0);
+        circ.setInteractive();
+        circ.setAlpha(.000001);
+        console.log(circ);
+        circ.on('pointerdown', () =>{
+            if (map1.get(name) == 0){
+                map1.set(name, 1);
+                letNumFound1++;
+                console.log(letNumFound1);
+            }
+            //console.log("found object");
+            this.tweens.add({
+                targets: Circ,
+                alpha: 0,
+                duration: 3000,
+            });
+            this.tweens.add({
+                targets: circ,
+                alpha: .40,
+                duration: 1000,
+            })
+        });
+    }
     loseItem(item) {
         if (!this.inventory.includes(item)) {
             console.warn('losing item not held:', item);
@@ -135,6 +158,19 @@ class AdventureScene extends Phaser.Scene {
         this.time.delayedCall(500, () => {
             this.inventory = this.inventory.filter((e) => e != item);
             this.updateInventory();
+        });
+    }
+
+    
+
+    make_draggable(head){
+        head.setInteractive({
+            draggable:true,
+            useHandCursor: true,
+        });
+        head.on('drag', (pointer, dragX, dragY) => {
+            head.x = dragX;
+            head.y = dragY;
         });
     }
 
