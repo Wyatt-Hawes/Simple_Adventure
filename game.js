@@ -207,7 +207,7 @@ class keyBreak extends AdventureScene{
 let anim = 0;
 class Menu extends AdventureScene{
     constructor() {
-        super('menu');
+        super('menu', "Find the key fragments!");
     }
     preload(){
         this.load.path = './assets/';
@@ -221,9 +221,9 @@ class Menu extends AdventureScene{
         }
     }
 
-    create(){
+    onEnter(){
         this.cameras.main.setBackgroundColor('#EAEAEA');
-
+        console.log(this.hasItem("Key Head"));
         //based off of https://phaser.discourse.group/t/how-to-create-circular-movement-motion-for-a-gameobject-with-arcade-physics/8324/4
         var graphics = this.add.graphics().lineStyle(1, 0xFF0000, 0.5);
         // A circle curve starts at angle 0, the "3 o'clock" position.
@@ -257,6 +257,12 @@ class Menu extends AdventureScene{
         {
         b1.on('pointerdown', (pointer, dragX, dragY) => {
             console.log("clicked 1!");
+            this.scene.start('firstpuzzle');
+        });
+
+        b2.on('pointerdown', (pointer, dragX, dragY) => {
+            console.log("clicked 2!");
+            this.scene.start('secondpuzzle');
         });
 
 
@@ -266,6 +272,7 @@ class Menu extends AdventureScene{
                 duration: 70,
                 scale: .28,
             });
+            this.showMessage("Click to enter!")
         });
         b1.on('pointerout', () => {
             me.add.tween({
@@ -320,6 +327,7 @@ class Menu extends AdventureScene{
 
         }
         if(anim == 0){
+            anim++;
             let head = this.add.sprite(-300,-200, 'key_head');
             let body = this.add.sprite(2000,-50, 'key_body');
             let blade = this.add.sprite(800,-300, 'key_blade');
@@ -439,6 +447,33 @@ class Menu extends AdventureScene{
                 }
             });
 
+        }else{
+            b1.startFollow({
+                duration: 10000,
+                yoyo: false,
+                loop: -1,
+                onStart: function () {
+                path1.getPoint(0, b1.pathVector);
+                }
+            });
+
+            b2.startFollow({
+                duration: 10000,
+                yoyo: false,
+                loop: -1,
+                onStart: function () {
+                path2.getPoint(0, b2.pathVector);
+                }
+            });
+
+            b3.startFollow({
+                duration: 10000,
+                yoyo: false,
+                loop: -1,
+                onStart: function () {
+                path3.getPoint(0, b3.pathVector);
+                }
+            });
         }
 
     }
@@ -446,9 +481,288 @@ class Menu extends AdventureScene{
 
 
 }
+let puzzle1Solved = 0;
+class FirstPuzzle extends AdventureScene{
+    constructor() {
+        
+            super('firstpuzzle');
+        
+    }
+    preload(){
+        this.load.path = './assets/';
+        this.load.image("puzzle", "1.jpg");
+        this.load.image("head", "key_head.png");
+        this.load.image("arrow", "backArrow.png");
+    }
+    onEnter(){
+        this.cameras.main.setBackgroundColor('#EAEAEA');
+        if(puzzle1Solved == 1){
+            this.gainItem("Key Head");
+        }
+        let p = this.add.sprite(50,10, "puzzle");
+        p.setScale();
+        p.setOrigin(0,0);
+        let myself = this;
+        let arrow = this.add.sprite(25,25, "arrow");
+        arrow.setScale(.1);
+        arrow.setInteractive();
+        arrow.on('pointerover', () => {
+            this.tweens.add({
+                targets: arrow,
+                scale: {from: .1, to: .11},
+                angle: {from: 0, to: -90},
+                duration: 100,
+            });
+        });
+        arrow.on('pointerout', () =>{
+            this.tweens.add({
+                targets: arrow,
+                scale: {from: .11, to: .1},
+                angle: {from: -90, to: 0},
+                duration: 100,
+            });
+        });
+        arrow.on("pointerdown",() => {
+            myself.gotoScene("menu");
+        });
+        //setTimeout(() => {this.gainItem("Key Head"); this.updateInventory()}, 2000);
 
+        // let clip = this.add.text(100, 100, "📎 paperclip")
+        //     .setFontSize(this.s * 2)
+        //     .setInteractive()
+        //     .on('pointerover', () => this.showMessage("Metal, bent."))
+        //     .on('pointerdown', () => {
+        //         this.showMessage("No touching!");
+        //         this.tweens.add({
+        //             targets: clip,
+        //             x: '+=' + this.s,
+        //             repeat: 2,
+        //             yoyo: true,
+        //             ease: 'Sine.inOut',
+        //             duration: 100
+        //         });
+        //     });
+        if(puzzle1Solved == 0){
+        let textBox = this.add.container(40,950);
+        let iSpy = this.add.text(0,0, "I spy: ", {color: 0xFFF, fontSize: '75px', bold: true});
+        textBox.add(iSpy);
 
+        let Glasses = this.add.text(270,10, "Glasses without a face,", {fontSize: '30px',color: 0xFFF});
+        let Hat = this.add.text(700,10, "an upside down top hat,", {fontSize: '30px',color: 0xFFF});
+        let TRICICLE = this.add.text(1120,10, "a bicycle,", {fontSize: '30px',color: 0xFFF});
+        let Horn = this.add.text(273,50, "a horn,", {fontSize: '30px',color: 0xFFF});
+        let Bone = this.add.text(393,50, " a dogs bone,", {fontSize: '30px',color: 0xFFF});
+        let Bride = this.add.text(630,50, "a bride and groom,", {fontSize: '30px',color: 0xFFF});
+        let Dove = this.add.text(960,50, "a dove,", {fontSize: '30px',color: 0xFFF});
+        textBox.add(Glasses);
+        textBox.add(Hat);
+        textBox.add(TRICICLE);
+        textBox.add(Horn);
+        textBox.add(Bone);
+        textBox.add(Bride);
+        textBox.add(Dove);
+        {
+        let glasses = this.add.circle(330,840, 20, 0xff0000);
+        this.setupObject(glasses, Glasses, "glasses");
 
+        let hat = this.add.circle(1111,331,20,0xff0000);
+        this.setupObject(hat, Hat, "hat");
+
+        let bone = this.add.circle(956, 814,20,0xff0000);
+        this.setupObject(bone, Bone, "bone");
+
+        let dove = this.add.circle(712,543,20,0xff0000);
+        this.setupObject(dove, Dove, "dove");
+
+        let horn = this.add.circle(281,504,40,0xff0000);
+        this.setupObject(horn,Horn,"horn");
+
+        let bicycle = this.add.circle(461, 362, 50, 0xff0000);
+        this.setupObject(bicycle, TRICICLE, "bicycle");
+
+        let bride = this.add.circle(333, 556, 50, 0xff0000);
+        this.setupObject(bride, Bride, "bride");
+        }
+
+        this.input.on('pointerdown', (mouse) => console.log(Math.floor(mouse.x) + "," + Math.floor(mouse.y)));
+        }
+    }
+    update(){
+        if(letNumFound1 == 7){
+            let me = this;
+            puzzle1Solved++;
+            letNumFound1 = -1;
+            let head = this.add.sprite(-200,-200,"head");
+            this.tweens.add({
+                targets: head,
+                x: 600,
+                y: 600,
+                scale: 2,
+                //alpha: 0,
+                duration: 4000,
+                onComplete: function(){
+                    me.gainItem("Key Head");
+                    me.showMessage("You found the head of the key!");
+                    fade.paused = false;
+                }
+
+            });
+            let fade = this.tweens.add({
+                targets: head,
+                alpha: 0,
+                duration: 2000,
+                paused: true,
+            })
+        }
+    }
+    
+    setupObject(circ, Circ, name){
+        map1.set(name, 0);
+        circ.setInteractive();
+        circ.setAlpha(.000001);
+        console.log(circ);
+        circ.on('pointerdown', () =>{
+            if (map1.get(name) == 0){
+                map1.set(name, 1);
+                letNumFound1++;
+                console.log(letNumFound1);
+            }
+            //console.log("found object");
+            this.tweens.add({
+                targets: Circ,
+                alpha: 0,
+                duration: 3000,
+            });
+            this.tweens.add({
+                targets: circ,
+                alpha: .40,
+                duration: 1000,
+            })
+        });
+    }
+}
+let map1 = new Map();
+let interactable = 0;
+let letNumFound1 = 0;
+
+let puzzle2Solved = 0;
+let letNumFound2 = 0;
+class SecondPuzzle extends AdventureScene{
+    constructor() {
+        
+            super('secondpuzzle');
+        
+    }
+    preload(){
+        this.load.path = './assets/';
+        this.load.image("puzzle2", "2.jpg");
+        this.load.image("body", "key_body.png");
+        this.load.image("arrow", "backArrow.png");
+    }
+    onEnter(){
+        this.cameras.main.setBackgroundColor('#EAEAEA');
+        if(puzzle1Solved == 1){
+            this.gainItem("Key Body");
+        }
+        let p = this.add.sprite(50,10, "puzzle2");
+        p.setScale();
+        p.setOrigin(0,0);
+        let myself = this;
+        let arrow = this.add.sprite(25,25, "arrow");
+        arrow.setScale(.1);
+        arrow.setInteractive();
+        arrow.on('pointerover', () => {
+            this.tweens.add({
+                targets: arrow,
+                scale: {from: .1, to: .11},
+                angle: {from: 0, to: -90},
+                duration: 100,
+            });
+        });
+        arrow.on('pointerout', () =>{
+            this.tweens.add({
+                targets: arrow,
+                scale: {from: .11, to: .1},
+                angle: {from: -90, to: 0},
+                duration: 100,
+            });
+        });
+        arrow.on("pointerdown",() => {
+            myself.gotoScene("menu");
+        });
+       
+        if(puzzle2Solved == 0){
+        let textBox = this.add.container(40,950);
+        let iSpy = this.add.text(0,0, "I spy: ", {color: 0xFFF, fontSize: '75px', bold: true});
+        textBox.add(iSpy);
+
+        let Glasses = this.add.text(270,10, "Glasses without a face,", {fontSize: '30px',color: 0xFFF});
+        
+        textBox.add(Glasses);
+
+        {
+        let glasses = this.add.circle(330,840, 20, 0xff0000);
+        this.setupObject(glasses, Glasses, "glasses");
+
+        }
+
+        this.input.on('pointerdown', (mouse) => console.log(Math.floor(mouse.x) + "," + Math.floor(mouse.y)));
+        }
+    }
+    update(){
+        if(letNumFound2 == 6){
+            let me = this;
+            puzzle2Solved++;
+            letNumFound1 = -1;
+            let body = this.add.sprite(-200,-200,"body");
+            this.tweens.add({
+                targets: head,
+                x: 600,
+                y: 600,
+                scale: 2,
+                //alpha: 0,
+                duration: 4000,
+                onComplete: function(){
+                    me.gainItem("Key Body");
+                    me.showMessage("You found the body of the key!");
+                    fade.paused = false;
+                }
+
+            });
+            let fade = this.tweens.add({
+                targets: body,
+                alpha: 0,
+                duration: 2000,
+                paused: true,
+            })
+        }
+    }
+    
+    setupObject(circ, Circ, name){
+        map1.set(name, 0);
+        circ.setInteractive();
+        circ.setAlpha(.000001);
+        console.log(circ);
+        circ.on('pointerdown', () =>{
+            if (map1.get(name) == 0){
+                map1.set(name, 1);
+                letNumFound2++;
+                console.log(letNumFound1);
+            }
+            //console.log("found object");
+            this.tweens.add({
+                targets: Circ,
+                alpha: 0,
+                duration: 3000,
+            });
+            this.tweens.add({
+                targets: circ,
+                alpha: .40,
+                duration: 1000,
+            })
+        });
+    }
+}
 
 
 class Outro extends Phaser.Scene {
@@ -475,7 +789,7 @@ const game = new Phaser.Game({
         width: 1920,
         height: 1080
     },
-    scene: [Menu, keyBreak, Intro, Demo2, Outro],
+    scene: [SecondPuzzle, FirstPuzzle,Menu, Intro,  Demo2, Outro, Demo1,keyBreak],
     title: "Adventure Game",
 });
 
