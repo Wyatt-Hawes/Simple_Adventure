@@ -1,3 +1,4 @@
+let myText = "";
 class AdventureScene extends Phaser.Scene {
 
     init(data) {
@@ -8,7 +9,7 @@ class AdventureScene extends Phaser.Scene {
         super(key);
         this.name = name;
     }
-
+    //let myText = "";
     create() {
         this.transitionDuration = 1000;
 
@@ -20,7 +21,7 @@ class AdventureScene extends Phaser.Scene {
         this.cameras.main.fadeIn(this.transitionDuration, 0, 0, 0);
 
         this.add.rectangle(this.w * 0.75, 0, this.w * 0.25, this.h).setOrigin(0, 0).setFillStyle(0);
-        this.add.text(this.w * 0.75 + this.s, this.s)
+        myText = this.add.text(this.w * 0.75 + this.s, this.s)
             .setText(this.name)
             .setStyle({ fontSize: `${3 * this.s}px` })
             .setWordWrapWidth(this.w * 0.25 - 2 * this.s);
@@ -115,12 +116,22 @@ class AdventureScene extends Phaser.Scene {
             }
         }
     }
-    setupObject(circ, Circ, name){
+
+    makeDropZone(sprite){
+        sprite.setInteractive({
+            dropZone: true,
+        });
+    }
+
+
+    setupObject(circ, Circ, name, message){
+        let me = this;
         map1.set(name, 0);
         circ.setInteractive();
         circ.setAlpha(.000001);
         console.log(circ);
         circ.on('pointerdown', () =>{
+            this.showMessage(message);
             if (map1.get(name) == 0){
                 map1.set(name, 1);
                 letNumFound1++;

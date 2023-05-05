@@ -204,6 +204,7 @@ class keyBreak extends AdventureScene{
     update(){
     }
 }
+let EnterSpace;
 let anim = 0;
 class Menu extends AdventureScene{
     constructor() {
@@ -218,12 +219,37 @@ class Menu extends AdventureScene{
         this.load.image('key_head', 'key_head.png');
         this.load.image('key_body', 'key_body.png');
         this.load.image('key_blade', 'key_blade.png');
+        this.load.image('stencil', 'key_outline.png');
         
+    }
+    checkCount(count,container, stencil){
+        if(count >= 3){
+            this.keyFlyAway(container, stencil);
+        }
+    }
+
+    keyFlyAway(container, stencil){
+        console.log("running Fly");
+        myText.setText("Congratulations!"); 
+        this.loseItem("Key Head");
+        this.loseItem("Key Body");
+        this.loseItem("Key Blade");
+        this.tweens.add({
+            targets: container,
+            duration: 3000,
+            scale: 2,
+        });
+        this.tweens.add({
+            targets: stencil,
+            duration: 1000,
+            alpha: 0
+        });
+
     }
 
     
-
     onEnter(){
+        Window.scene = this; 
         this.cameras.main.setBackgroundColor('#EAEAEA');
         console.log(this.hasItem("Key Head"));
         //based off of https://phaser.discourse.group/t/how-to-create-circular-movement-motion-for-a-gameobject-with-arcade-physics/8324/4
@@ -237,18 +263,105 @@ class Menu extends AdventureScene{
         //path1.draw(graphics, 128);
         //path2.draw(graphics, 128);
         //path3.draw(graphics, 128);
+        this.keyFull = this.add.container(700,700);
+        this.keyFull.depth = 100;
+        let meV2 = this;
+        EnterSpace = meV2;
         if (puzzle1Solved == 1 && puzzle2Solved == 1 && puzzle3Solved == 1)
-        {
-
-            let head = this.add.sprite(300,300, 'key_head');
-            let body = this.add.sprite(300, 600, 'key_body');
-            let blade = this.add.sprite(600, 600, 'key_blade');
-
+        {   
+            this.input.on('pointerdown', (mouse) => console.log(Math.floor(mouse.x) + "," + Math.floor(mouse.y)));
+            myText.setText("Join the fragments!"); 
+            let bladeCirc = this.add.circle(836,671,50, 0xFF0000,.00001);
+            let bodyCirc = this.add.ellipse(778,714,250,50,0xff0000,.00001)
+            let headCirc = this.add.circle(578,712,80,0xFF0000,.00001);
+            let stencil = this.add.sprite(700,700, 'stencil');
+            let head = this.add.sprite(900,300, 'key_head');
+            let body = this.add.sprite(600, 300, 'key_body');
+            let blade = this.add.sprite(300, 300, 'key_blade');
+            //let stencil = this.add.sprite(700,700, 'stencil');
+            //this.keyFull.add(head);
 
             this.make_draggable(head);
             this.make_draggable(body);
             this.make_draggable(blade);
 
+            this.makeDropZone(bladeCirc);
+            this.makeDropZone(bodyCirc);
+            this.makeDropZone(headCirc);
+
+            let count = 0;
+            head.on('drop', (pointer,target) => {
+
+                console.log("dropped");
+                if(target === headCirc){
+                    console.log("dropped on head!");
+                    
+                    this.tweens.add({
+                        targets: head,
+                        duration: 100,
+                        x: 593,
+                        y: 712,
+                        onComplete: function(){
+                            console.log("done");
+                            head.disableInteractive();
+                            meV2.keyFull.add(head);
+                            head.x = 593 - 700,
+                            head.y = 712 - 700,
+                            count++;
+                            meV2.checkCount(count, meV2.keyFull, stencil);
+                        }
+                    })
+                  
+                }
+            });
+            body.on('drop', (pointer,target) => {
+                console.log("dropped");
+                //console.log("(" + Math.floor(body.x) + "," + Math.floor(body.y) + ")");
+                if(target === bodyCirc){
+                    //console.log("dropped on head!");
+                    this.tweens.add({
+                        targets: body,
+                        duration: 100,
+                        x: 783,
+                        y: 715,
+                        onComplete: function(){
+                            console.log("done");
+                            body.disableInteractive();
+                            meV2.keyFull.add(body);
+                            body.x = 783 - 700,
+                            body.y = 715 - 700,
+                            count++;
+                            meV2.checkCount(count, meV2.keyFull, stencil);
+                        }
+                    })
+                    
+                }
+            });
+            blade.on('drop', (pointer,target) => {
+                //console.log("dropped");
+                console.log("(" + Math.floor(blade.x) + "," + Math.floor(blade.y) + ")");
+                
+                if(target === bladeCirc){
+                    
+                    //console.log("dropped on head!");
+                    this.tweens.add({
+                        targets: blade,
+                        duration: 100,
+                        x: 839,
+                        y: 672,
+                        onComplete: function(){
+                            console.log("done");
+                            blade.disableInteractive();
+                            meV2.keyFull.add(blade);
+                            blade.x = 839 - 700;
+                            blade.y = 672 - 700;
+                            count++;
+                            meV2.checkCount(count, meV2.keyFull, stencil);
+                        }
+                    })
+                }
+                
+            });
 
 
         }else{
@@ -442,6 +555,9 @@ class Menu extends AdventureScene{
         }
 
     }
+    update(){
+
+    }
 
 
 
@@ -534,25 +650,25 @@ class FirstPuzzle extends AdventureScene{
         textBox.add(Dove);
         {
         let glasses = this.add.circle(330,840, 20, 0xff0000);
-        this.setupObject(glasses, Glasses, "glasses");
+        this.setupObject(glasses, Glasses, "glasses", "Glasses without a face!");
 
         let hat = this.add.circle(1111,331,20,0xff0000);
-        this.setupObject(hat, Hat, "hat");
+        this.setupObject(hat, Hat, "hat", "An upside down top hat!");
 
         let bone = this.add.circle(956, 814,20,0xff0000);
-        this.setupObject(bone, Bone, "bone");
+        this.setupObject(bone, Bone, "bone", "A Bicycle!");
 
         let dove = this.add.circle(712,543,20,0xff0000);
-        this.setupObject(dove, Dove, "dove");
+        this.setupObject(dove, Dove, "dove", "A dove!");
 
         let horn = this.add.circle(281,504,40,0xff0000);
-        this.setupObject(horn,Horn,"horn");
+        this.setupObject(horn,Horn,"horn", "A Horn!");
 
         let bicycle = this.add.circle(461, 362, 50, 0xff0000);
-        this.setupObject(bicycle, TRICICLE, "bicycle");
+        this.setupObject(bicycle, TRICICLE, "bicycle", "A Bicycle!");
 
         let bride = this.add.circle(333, 556, 50, 0xff0000);
-        this.setupObject(bride, Bride, "bride");
+        this.setupObject(bride, Bride, "bride", "A Bride and Groom!");
         }
 
         this.input.on('pointerdown', (mouse) => console.log(Math.floor(mouse.x) + "," + Math.floor(mouse.y)));
@@ -677,13 +793,13 @@ class SecondPuzzle extends AdventureScene{
         let dogcat = this.add.circle(1226,399, 40, 0xff0000);
         let rooster = this.add.circle(59,344, 40, 0xff0000);
 
-        this.setupObject(oop, Oop, "oop");
-        this.setupObject(shotgun,Shotgun, "shotgun");
-        this.setupObject(pet, Pet, "pet");
-        this.setupObject(head,Head, "head");
-        this.setupObject(caution,Caution, "caution");
-        this.setupObject(dogcat,Dogcat, "dogcat");
-        this.setupObject(rooster,Rooster,"rooster");
+        this.setupObject(oop, Oop, "oop", "OOP!");
+        this.setupObject(shotgun,Shotgun, "shotgun", "A Shotgun!");
+        this.setupObject(pet, Pet, "pet", "A flattened cat!");
+        this.setupObject(head,Head, "head", "A head with no body!");
+        this.setupObject(caution,Caution, "caution", "CAUTION!");
+        this.setupObject(dogcat,Dogcat, "dogcat", "A dog chasing a cat!");
+        this.setupObject(rooster,Rooster,"rooster", "A Rooster!");
 
 
 
@@ -805,12 +921,12 @@ class ThirdPuzzle extends AdventureScene{
         let bird = this.add.circle(512,432, 30, 0xFF0000);
         let goose = this.add.circle(1114,598,20, 0x0000FF);
 
-        this.setupObject(squirrel, Squirrel, "squirrel");
-        this.setupObject(kittens, Kittens, "kittens");
-        this.setupObject(six,Six,"six");
-        this.setupObject(bear,Bear,"bear");
-        this.setupObject(bird,Bird,"bird");
-        this.setupObject(goose,Goose, "goose");
+        this.setupObject(squirrel, Squirrel, "squirrel", "Three squirrels running in a line!");
+        this.setupObject(kittens, Kittens, "kittens", "Two sneaky kittens!");
+        this.setupObject(six,Six,"six", "The number six!");
+        this.setupObject(bear,Bear,"bear", "A bear in overalls!");
+        this.setupObject(bird,Bird,"bird", "A bird perched on a light!");
+        this.setupObject(goose,Goose, "goose", "A backwards hat on a goose!");
 
 
 
