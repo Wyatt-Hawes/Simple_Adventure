@@ -235,6 +235,10 @@ class Menu extends AdventureScene{
         //path1.draw(graphics, 128);
         //path2.draw(graphics, 128);
         //path3.draw(graphics, 128);
+        if (puzzle1Solved == 1 && puzzle2Solved == 1 && puzzle3Solved == 1)
+        {
+
+        }else{
 
         var b1 = this.add.follower(path1, 900, 500, 'puz1');
         b1.setInteractive({});
@@ -263,6 +267,10 @@ class Menu extends AdventureScene{
         b2.on('pointerdown', (pointer, dragX, dragY) => {
             console.log("clicked 2!");
             this.scene.start('secondpuzzle');
+        });
+        b3.on('pointerdown', (pointer, dragX, dragY) => {
+            console.log("clicked 3!");
+            this.scene.start('thirdpuzzle');
         });
 
 
@@ -475,6 +483,7 @@ class Menu extends AdventureScene{
                 }
             });
         }
+        }
 
     }
 
@@ -496,8 +505,14 @@ class FirstPuzzle extends AdventureScene{
     }
     onEnter(){
         this.cameras.main.setBackgroundColor('#EAEAEA');
+        if(puzzle2Solved == 1){
+            this.gainItem("Key Body");
+        }
         if(puzzle1Solved == 1){
             this.gainItem("Key Head");
+        }
+        if(puzzle3Solved == 1){
+            this.gainItem("Key Blade");
         }
         let p = this.add.sprite(50,10, "puzzle");
         p.setScale();
@@ -661,8 +676,14 @@ class SecondPuzzle extends AdventureScene{
     }
     onEnter(){
         this.cameras.main.setBackgroundColor('#EAEAEA');
-        if(puzzle1Solved == 1){
+        if(puzzle2Solved == 1){
             this.gainItem("Key Body");
+        }
+        if(puzzle1Solved == 1){
+            this.gainItem("Key Head");
+        }
+        if(puzzle3Solved == 1){
+            this.gainItem("Key Blade");
         }
         let p = this.add.sprite(50,10, "puzzle2");
         p.setScale();
@@ -696,13 +717,43 @@ class SecondPuzzle extends AdventureScene{
         let iSpy = this.add.text(0,0, "I spy: ", {color: 0xFFF, fontSize: '75px', bold: true});
         textBox.add(iSpy);
 
-        let Glasses = this.add.text(270,10, "Glasses without a face,", {fontSize: '30px',color: 0xFFF});
-        
-        textBox.add(Glasses);
+        let Oop = this.add.text(270,10, "OOP,", {fontSize: '30px',color: 0xFFF});
+        let Shotgun = this.add.text(350, 10, "a shotgun,", {fontSize: '30px',color: 0xFFF});
+        let Pet = this.add.text(540, 10, "a flattened pet,", {fontSize: '30px',color: 0xFFF});
+        let Head = this.add.text(840, 10, "a head with no body,", {fontSize: '30px',color: 0xFFF});
+        let Caution = this.add.text(270, 50, "CAUTION,", {fontSize: '30px',color: 0xFFF});
+        let Dogcat = this.add.text(420, 50, "a dog chasing a cat,", {fontSize: '30px',color: 0xFFF});
+        let Rooster = this.add.text(800, 50, "and a rooster.", {fontSize: '30px',color: 0xFFF});
+
+
+
+        textBox.add(Oop);
+        textBox.add(Shotgun);
+        textBox.add(Pet);
+        textBox.add(Head);
+        textBox.add(Caution);
+        textBox.add(Dogcat);
+        textBox.add(Rooster);
 
         {
-        let glasses = this.add.circle(330,840, 20, 0xff0000);
-        this.setupObject(glasses, Glasses, "glasses");
+        let oop = this.add.circle(1322,465, 20, 0xff0000);
+        let shotgun = this.add.circle(358,820, 30, 0xff0000);
+        let pet = this.add.circle(1133,745, 20, 0xff0000);
+        let head = this.add.circle(590,410, 25, 0xff0000);
+        let caution = this.add.circle(1013,317, 30, 0xff0000);
+        let dogcat = this.add.circle(1226,399, 40, 0xff0000);
+        let rooster = this.add.circle(59,344, 40, 0xff0000);
+
+        this.setupObject(oop, Oop, "oop");
+        this.setupObject(shotgun,Shotgun, "shotgun");
+        this.setupObject(pet, Pet, "pet");
+        this.setupObject(head,Head, "head");
+        this.setupObject(caution,Caution, "caution");
+        this.setupObject(dogcat,Dogcat, "dogcat");
+        this.setupObject(rooster,Rooster,"rooster");
+
+
+
 
         }
 
@@ -710,13 +761,13 @@ class SecondPuzzle extends AdventureScene{
         }
     }
     update(){
-        if(letNumFound2 == 6){
+        if(letNumFound2 == 7){
             let me = this;
             puzzle2Solved++;
-            letNumFound1 = -1;
+            letNumFound2 = -1;
             let body = this.add.sprite(-200,-200,"body");
             this.tweens.add({
-                targets: head,
+                targets: body,
                 x: 600,
                 y: 600,
                 scale: 2,
@@ -747,7 +798,7 @@ class SecondPuzzle extends AdventureScene{
             if (map1.get(name) == 0){
                 map1.set(name, 1);
                 letNumFound2++;
-                console.log(letNumFound1);
+                console.log(letNumFound2);
             }
             //console.log("found object");
             this.tweens.add({
@@ -764,6 +815,155 @@ class SecondPuzzle extends AdventureScene{
     }
 }
 
+let puzzle3Solved = 0;
+let letNumFound3 = 0;
+class ThirdPuzzle extends AdventureScene{
+    constructor() {
+        
+            super('thirdpuzzle');
+        
+    }
+    preload(){
+        this.load.path = './assets/';
+        this.load.image("puzzle3", "4.jpg");
+        this.load.image("blade", "key_blade.png");
+        this.load.image("arrow", "backArrow.png");
+    }
+    onEnter(){
+        this.cameras.main.setBackgroundColor('#EAEAEA');
+        if(puzzle2Solved == 1){
+            this.gainItem("Key Body");
+        }
+        if(puzzle1Solved == 1){
+            this.gainItem("Key Head");
+        }
+        if(puzzle3Solved == 1){
+            this.gainItem("Key Blade");
+        }
+        let p = this.add.sprite(50,10, "puzzle3");
+        p.setScale(.98);
+        p.setOrigin(0,0);
+        let myself = this;
+        let arrow = this.add.sprite(25,25, "arrow");
+        arrow.setScale(.1);
+        arrow.setInteractive();
+        arrow.on('pointerover', () => {
+            this.tweens.add({
+                targets: arrow,
+                scale: {from: .1, to: .11},
+                angle: {from: 0, to: -90},
+                duration: 100,
+            });
+        });
+        arrow.on('pointerout', () =>{
+            this.tweens.add({
+                targets: arrow,
+                scale: {from: .11, to: .1},
+                angle: {from: -90, to: 0},
+                duration: 100,
+            });
+        });
+        arrow.on("pointerdown",() => {
+            myself.gotoScene("menu");
+        });
+       
+        if(puzzle3Solved == 0){
+        let textBox = this.add.container(40,950);
+        let iSpy = this.add.text(0,0, "I spy: ", {color: 0xFFF, fontSize: '75px', bold: true});
+        textBox.add(iSpy);
+
+        let Squirrel = this.add.text(270,10, "Three squirrels in a line,", {fontSize: '30px',color: 0xFFF});
+        let Kittens = this.add.text(750,10, "two kittens hiding,", {fontSize: '30px',color: 0xFFF});
+        let Six = this.add.text(1100,10, "The number six,", {fontSize: '30px',color: 0xFFF});
+        let Bear = this.add.text(270, 40, "a bear in overalls,",{fontSize: '30px',color: 0xFFF});
+        let Bird = this.add.text(620, 40, "a bird perched on a light,",{fontSize: '30px',color: 0xFFF});
+        let Goose = this.add.text(1090, 40, "a hat on a goose,",{fontSize: '30px',color: 0xFFF});
+
+
+        textBox.add(Squirrel);
+        textBox.add(Kittens);
+        textBox.add(Six);
+        textBox.add(Bear);
+        textBox.add(Bird);
+        textBox.add(Goose);
+
+        {
+        let squirrel = this.add.ellipse(261,125, 300, 60, 0x0000FF);
+        let kittens = this.add.circle(201,912, 30, 0xFF0000);
+        let six = this.add.circle(892,220, 30, 0xFF0000);
+        let bear = this.add.circle(1267,194, 40, 0xFF0000);
+        let bird = this.add.circle(512,432, 30, 0xFF0000);
+        let goose = this.add.circle(1114,598,20, 0x0000FF);
+
+        this.setupObject(squirrel, Squirrel, "squirrel");
+        this.setupObject(kittens, Kittens, "kittens");
+        this.setupObject(six,Six,"six");
+        this.setupObject(bear,Bear,"bear");
+        this.setupObject(bird,Bird,"bird");
+        this.setupObject(goose,Goose, "goose");
+
+
+
+
+        }
+
+        this.input.on('pointerdown', (mouse) => console.log(Math.floor(mouse.x) + "," + Math.floor(mouse.y)));
+        }
+    }
+    update(){
+        if(letNumFound3 == 6){
+            let me = this;
+            puzzle3Solved++;
+            letNumFound3 = -1;
+            let blade = this.add.sprite(-200,-200,"blade");
+            this.tweens.add({
+                targets: blade,
+                x: 600,
+                y: 600,
+                scale: 2,
+                //alpha: 0,
+                duration: 4000,
+                onComplete: function(){
+                    me.gainItem("Key Blade");
+                    me.showMessage("You found the blade of the key!");
+                    fade.paused = false;
+                }
+
+            });
+            let fade = this.tweens.add({
+                targets: blade,
+                alpha: 0,
+                duration: 2000,
+                paused: true,
+            })
+        }
+    }
+    
+    setupObject(circ, Circ, name){
+        map1.set(name, 0);
+        circ.setInteractive();
+        circ.setAlpha(.000001);
+        console.log(circ);
+        circ.on('pointerdown', () =>{
+            if (map1.get(name) == 0){
+                map1.set(name, 1);
+                letNumFound3++;
+                console.log(letNumFound3);
+            }
+            //console.log("found object");
+            this.tweens.add({
+                targets: Circ,
+                alpha: 0,
+                duration: 3000,
+            });
+            this.tweens.add({
+                targets: circ,
+                alpha: .40,
+                duration: 1000,
+            })
+        });
+    }
+}
 
 class Outro extends Phaser.Scene {
     constructor() {
@@ -789,7 +989,7 @@ const game = new Phaser.Game({
         width: 1920,
         height: 1080
     },
-    scene: [SecondPuzzle, FirstPuzzle,Menu, Intro,  Demo2, Outro, Demo1,keyBreak],
+    scene: [ThirdPuzzle, SecondPuzzle, FirstPuzzle,Menu, Intro,  Demo2, Outro, Demo1,keyBreak],
     title: "Adventure Game",
 });
 
