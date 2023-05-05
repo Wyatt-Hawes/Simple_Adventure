@@ -214,12 +214,14 @@ class Menu extends AdventureScene{
         this.load.image('puz1', '1.jpg');
         this.load.image('puz2', '2.jpg');
         this.load.image('puz3', '4.jpg');
-        if (anim == 0){
-            this.load.image('key_head', 'key_head.png');
-            this.load.image('key_body', 'key_body.png');
-            this.load.image('key_blade', 'key_blade.png');
-        }
+        
+        this.load.image('key_head', 'key_head.png');
+        this.load.image('key_body', 'key_body.png');
+        this.load.image('key_blade', 'key_blade.png');
+        
     }
+
+    
 
     onEnter(){
         this.cameras.main.setBackgroundColor('#EAEAEA');
@@ -237,6 +239,17 @@ class Menu extends AdventureScene{
         //path3.draw(graphics, 128);
         if (puzzle1Solved == 1 && puzzle2Solved == 1 && puzzle3Solved == 1)
         {
+
+            let head = this.add.sprite(300,300, 'key_head');
+            let body = this.add.sprite(300, 600, 'key_body');
+            let blade = this.add.sprite(600, 600, 'key_blade');
+
+
+            this.make_draggable(head);
+            this.make_draggable(body);
+            this.make_draggable(blade);
+
+
 
         }else{
 
@@ -273,66 +286,9 @@ class Menu extends AdventureScene{
             this.scene.start('thirdpuzzle');
         });
 
-
-        b1.on('pointerover', () => {
-            me.add.tween({
-                targets: b1,
-                duration: 70,
-                scale: .28,
-            });
-            this.showMessage("Click to enter!")
-        });
-        b1.on('pointerout', () => {
-            me.add.tween({
-                targets: b1,
-                duration: 70,
-                scale: .25,
-            });
-        });
-        }   
-
-        //b2
-        {
-        b2.on('pointerdown', (pointer, dragX, dragY) => {
-            console.log("clicked 2!");
-        });
-        b2.on('pointerover', () => {
-            me.add.tween({
-                targets: b2,
-                duration: 70,
-                scale: .28,
-            });
-        });
-        b2.on('pointerout', () => {
-            me.add.tween({
-                targets: b2,
-                duration: 70,
-                scale: .25,
-            });
-        });
-        
-        }
-
-        //b3
-        {
-        b3.on('pointerdown', (pointer, dragX, dragY) => {
-            console.log("clicked 3!");
-        });
-        b3.on('pointerover', () => {
-            me.add.tween({
-                targets: b3,
-                duration: 70,
-                scale: .28,
-            });
-        });
-        b3.on('pointerout', () => {
-            me.add.tween({
-                targets: b3,
-                duration: 70,
-                scale: .25,
-            });
-        });
-
+        this.enlarge_on_mouse(b1);
+        this.enlarge_on_mouse(b2);
+        this.enlarge_on_mouse(b3);
         }
         if(anim == 0){
             anim++;
@@ -631,30 +587,7 @@ class FirstPuzzle extends AdventureScene{
         }
     }
     
-    setupObject(circ, Circ, name){
-        map1.set(name, 0);
-        circ.setInteractive();
-        circ.setAlpha(.000001);
-        console.log(circ);
-        circ.on('pointerdown', () =>{
-            if (map1.get(name) == 0){
-                map1.set(name, 1);
-                letNumFound1++;
-                console.log(letNumFound1);
-            }
-            //console.log("found object");
-            this.tweens.add({
-                targets: Circ,
-                alpha: 0,
-                duration: 3000,
-            });
-            this.tweens.add({
-                targets: circ,
-                alpha: .40,
-                duration: 1000,
-            })
-        });
-    }
+    // setupObject(circ, Circ, name){
 }
 let map1 = new Map();
 let interactable = 0;
@@ -789,30 +722,7 @@ class SecondPuzzle extends AdventureScene{
         }
     }
     
-    setupObject(circ, Circ, name){
-        map1.set(name, 0);
-        circ.setInteractive();
-        circ.setAlpha(.000001);
-        console.log(circ);
-        circ.on('pointerdown', () =>{
-            if (map1.get(name) == 0){
-                map1.set(name, 1);
-                letNumFound2++;
-                console.log(letNumFound2);
-            }
-            //console.log("found object");
-            this.tweens.add({
-                targets: Circ,
-                alpha: 0,
-                duration: 3000,
-            });
-            this.tweens.add({
-                targets: circ,
-                alpha: .40,
-                duration: 1000,
-            })
-        });
-    }
+    // setupObject(circ, Circ, name){
 }
 
 let puzzle3Solved = 0;
@@ -906,8 +816,18 @@ class ThirdPuzzle extends AdventureScene{
 
 
         }
+        let myself = this;
 
         this.input.on('pointerdown', (mouse) => console.log(Math.floor(mouse.x) + "," + Math.floor(mouse.y)));
+        this.input.keyboard.on('keydown-' + 'SPACE', function (event){
+            console.log("cheater!");
+            puzzle1Solved = 1;
+            puzzle2Solved = 1;
+            puzzle3Solved = 1;
+            myself.gainItem("Key Head");
+            myself.gainItem("Key Body");
+            myself.gainItem("Key Blade");
+        });
         }
     }
     update(){
@@ -939,30 +859,8 @@ class ThirdPuzzle extends AdventureScene{
         }
     }
     
-    setupObject(circ, Circ, name){
-        map1.set(name, 0);
-        circ.setInteractive();
-        circ.setAlpha(.000001);
-        console.log(circ);
-        circ.on('pointerdown', () =>{
-            if (map1.get(name) == 0){
-                map1.set(name, 1);
-                letNumFound3++;
-                console.log(letNumFound3);
-            }
-            //console.log("found object");
-            this.tweens.add({
-                targets: Circ,
-                alpha: 0,
-                duration: 3000,
-            });
-            this.tweens.add({
-                targets: circ,
-                alpha: .40,
-                duration: 1000,
-            })
-        });
-    }
+    // setupObject(circ, Circ, name){
+
 }
 
 class Outro extends Phaser.Scene {
