@@ -174,6 +174,25 @@ class AdventureScene extends Phaser.Scene {
         });
     }
 
+    enlarge_on_mouse(b1){
+        let me = this;
+        b1.on('pointerover', () => {
+            me.add.tween({
+                targets: b1,
+                duration: 70,
+                scale: .28,
+            });
+            this.showMessage("Click to enter!")
+        });
+        b1.on('pointerout', () => {
+            me.add.tween({
+                targets: b1,
+                duration: 70,
+                scale: .25,
+            });
+        });
+    }
+
     gotoScene(key) {
         this.cameras.main.fade(this.transitionDuration, 0, 0, 0);
         this.time.delayedCall(this.transitionDuration, () => {
