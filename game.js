@@ -670,7 +670,9 @@ class FirstPuzzle extends AdventureScene{
         let arrow = this.add.sprite(25,25, "arrow");
         arrow.setScale(.1);
         arrow.setInteractive();
+        let m = this;
         arrow.on('pointerover', () => {
+            m.showMessage("Go back?");
             this.tweens.add({
                 targets: arrow,
                 scale: {from: .1, to: .11},
@@ -819,7 +821,9 @@ class SecondPuzzle extends AdventureScene{
         let arrow = this.add.sprite(25,25, "arrow");
         arrow.setScale(.1);
         arrow.setInteractive();
+        let m = this;
         arrow.on('pointerover', () => {
+            m.showMessage("Go back?");
             this.tweens.add({
                 targets: arrow,
                 scale: {from: .1, to: .11},
@@ -942,7 +946,9 @@ class ThirdPuzzle extends AdventureScene{
         let arrow = this.add.sprite(25,25, "arrow");
         arrow.setScale(.1);
         arrow.setInteractive();
+        let m = this;
         arrow.on('pointerover', () => {
+            m.showMessage("Go back?");
             this.tweens.add({
                 targets: arrow,
                 scale: {from: .1, to: .11},
