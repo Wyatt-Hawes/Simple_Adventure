@@ -1063,7 +1063,7 @@ const game = new Phaser.Game({
         width: 1920,
         height: 1080
     },
-    scene: [ Intro,Expos, ThirdPuzzle, SecondPuzzle, FirstPuzzle,Menu,  Demo2, Outro, Demo1,keyBreak],
+    scene: [ Intro, Expos, ThirdPuzzle, SecondPuzzle, FirstPuzzle,Menu,  Demo2, Outro, Demo1,keyBreak],
     title: "Adventure Game",
 });
 
