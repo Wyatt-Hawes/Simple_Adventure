@@ -111,6 +111,188 @@ class Intro extends Phaser.Scene {
         });
     }
 }
+
+let t1;
+class Expos extends Phaser.Scene{
+    constructor() {
+        super('expos');
+    }
+    checkCount(count,container, stencil){
+        t1.setText("Good Job!");
+            t1.x = 400;
+            t1.y = 100;
+        if(count >= 3){
+
+            this.keyFlyAway(container, stencil);
+        }
+    }
+    keyFlyAway(container, stencil){
+        //console.log("running Fly");
+        t1.setText("You Win!");
+        let me = this;
+        let moveUp = this.tweens.add({
+            delay: 200,
+            targets: container,
+            duration: 3000,
+            paused: true,
+            y: -1000,
+            ease: 'circ.easeIn',
+            onComplete: function(){
+                me.cameras.main.fade(this.transitionDuration, 255, 255, 255);
+            }
+        });
+
+        this.tweens.add({
+            targets: container,
+            duration: 3000,
+            scale: 2,
+            onComplete: function(){
+                moveUp.paused = false;
+            }
+        });
+        this.tweens.add({
+            targets: stencil,
+            duration: 1000,
+            alpha: 0
+        });
+
+        
+
+    }
+        preload(){
+        this.load.path = './assets/';
+        this.load.image('puz1', '1.jpg');
+        this.load.image('puz2', '2.jpg');
+        this.load.image('puz3', '4.jpg');
+        
+        this.load.image('key_head', 'key_head.png');
+        this.load.image('key_body', 'key_body.png');
+        this.load.image('key_blade', 'key_blade.png');
+        this.load.image('stencil', 'key_outline.png');
+        
+        }
+        makeDropZone(sprite){
+            sprite.setInteractive({
+                dropZone: true,
+            });
+        }
+        make_draggable(head){
+            head.setInteractive({
+                draggable:true,
+                useHandCursor: true,
+            });
+            head.on('drag', (pointer, dragX, dragY) => {
+                head.x = dragX;
+                head.y = dragY;
+            });
+        }
+    
+        create(){
+            Window.scene = this; 
+            this.cameras.main.setBackgroundColor('#EAEAEA');
+        
+            var graphics = this.add.graphics().lineStyle(1, 0xFF0000, 0.5);
+            this.keyFull = this.add.container(700,700);
+            this.keyFull.depth = 100;
+            let meV2 = this;
+            EnterSpace = meV2;
+            this.input.on('pointerdown', (mouse) => console.log(Math.floor(mouse.x) + "," + Math.floor(mouse.y)));
+        
+            let bladeCirc = this.add.circle(836,671,50, 0xFF0000,.00001);
+            let bodyCirc = this.add.ellipse(778,714,250,50,0xff0000,.00001)
+            let headCirc = this.add.circle(578,712,80,0xFF0000,.00001);
+            let stencil = this.add.sprite(700,700, 'stencil');
+            let head = this.add.sprite(900,300, 'key_head');
+            let body = this.add.sprite(600, 300, 'key_body');
+            let blade = this.add.sprite(300, 300, 'key_blade');
+
+            t1 = this.add.text(100,100, "Put the Pieces Together! ", {color: 0xFFF, fontSize: '75px', bold: true});
+
+            this.make_draggable(head);
+            this.make_draggable(body);
+            this.make_draggable(blade);
+
+            this.makeDropZone(bladeCirc);
+            this.makeDropZone(bodyCirc);
+            this.makeDropZone(headCirc);
+
+            let count = 0;
+            head.on('drop', (pointer,target) => {
+
+                console.log("dropped");
+                if(target === headCirc){
+                    console.log("dropped on head!");
+                    
+                    this.tweens.add({
+                        targets: head,
+                        duration: 100,
+                        x: 593,
+                        y: 712,
+                        onComplete: function(){
+                            console.log("done");
+                            head.disableInteractive();
+                            meV2.keyFull.add(head);
+                            head.x = 593 - 700,
+                            head.y = 712 - 700,
+                            count++;
+                            meV2.checkCount(count, meV2.keyFull, stencil);
+                        }
+                    })
+                  
+                }
+            });
+            body.on('drop', (pointer,target) => {
+                console.log("dropped");
+                //console.log("(" + Math.floor(body.x) + "," + Math.floor(body.y) + ")");
+                if(target === bodyCirc){
+                    //console.log("dropped on head!");
+                    this.tweens.add({
+                        targets: body,
+                        duration: 100,
+                        x: 783,
+                        y: 715,
+                        onComplete: function(){
+                            console.log("done");
+                            body.disableInteractive();
+                            meV2.keyFull.add(body);
+                            body.x = 783 - 700,
+                            body.y = 715 - 700,
+                            count++;
+                            meV2.checkCount(count, meV2.keyFull, stencil);
+                        }
+                    })
+                    
+                }
+            });
+            blade.on('drop', (pointer,target) => {
+                //console.log("dropped");
+                console.log("(" + Math.floor(blade.x) + "," + Math.floor(blade.y) + ")");
+                
+                if(target === bladeCirc){
+                    
+                    //console.log("dropped on head!");
+                    this.tweens.add({
+                        targets: blade,
+                        duration: 100,
+                        x: 839,
+                        y: 672,
+                        onComplete: function(){
+                            console.log("done");
+                            blade.disableInteractive();
+                            meV2.keyFull.add(blade);
+                            blade.x = 839 - 700;
+                            blade.y = 672 - 700;
+                            count++;
+                            meV2.checkCount(count, meV2.keyFull, stencil);
+                        }
+                    })
+                }
+                
+            });
+
+    }
+}
+
 class keyBreak extends AdventureScene{
     constructor(){
         super('keybreak');
@@ -234,43 +416,7 @@ class Menu extends AdventureScene{
         }
     }
 
-    keyFlyAway(container, stencil){
-        //console.log("running Fly");
-        myText.setText("Good Job!"); 
-        this.loseItem("Key Head");
-        this.loseItem("Key Body");
-        this.loseItem("Key Blade");
-
-        let me = this;
-        let moveUp = this.tweens.add({
-            delay: 200,
-            targets: container,
-            duration: 3000,
-            paused: true,
-            y: -1000,
-            ease: 'circ.easeIn',
-            onComplete: function(){
-                me.cameras.main.fade(this.transitionDuration, 255, 255, 255);
-            }
-        });
-
-        this.tweens.add({
-            targets: container,
-            duration: 3000,
-            scale: 2,
-            onComplete: function(){
-                moveUp.paused = false;
-            }
-        });
-        this.tweens.add({
-            targets: stencil,
-            duration: 1000,
-            alpha: 0
-        });
-
-        
-
-    }
+    
 
     
     onEnter(){
@@ -294,101 +440,7 @@ class Menu extends AdventureScene{
         EnterSpace = meV2;
         if (puzzle1Solved == 1 && puzzle2Solved == 1 && puzzle3Solved == 1)
         {   
-            this.input.on('pointerdown', (mouse) => console.log(Math.floor(mouse.x) + "," + Math.floor(mouse.y)));
-            myText.setText("Join the fragments!"); 
-            let bladeCirc = this.add.circle(836,671,50, 0xFF0000,.00001);
-            let bodyCirc = this.add.ellipse(778,714,250,50,0xff0000,.00001)
-            let headCirc = this.add.circle(578,712,80,0xFF0000,.00001);
-            let stencil = this.add.sprite(700,700, 'stencil');
-            let head = this.add.sprite(900,300, 'key_head');
-            let body = this.add.sprite(600, 300, 'key_body');
-            let blade = this.add.sprite(300, 300, 'key_blade');
-            //let stencil = this.add.sprite(700,700, 'stencil');
-            //this.keyFull.add(head);
-
-            this.make_draggable(head);
-            this.make_draggable(body);
-            this.make_draggable(blade);
-
-            this.makeDropZone(bladeCirc);
-            this.makeDropZone(bodyCirc);
-            this.makeDropZone(headCirc);
-
-            let count = 0;
-            head.on('drop', (pointer,target) => {
-
-                console.log("dropped");
-                if(target === headCirc){
-                    console.log("dropped on head!");
-                    
-                    this.tweens.add({
-                        targets: head,
-                        duration: 100,
-                        x: 593,
-                        y: 712,
-                        onComplete: function(){
-                            console.log("done");
-                            head.disableInteractive();
-                            meV2.keyFull.add(head);
-                            head.x = 593 - 700,
-                            head.y = 712 - 700,
-                            count++;
-                            meV2.checkCount(count, meV2.keyFull, stencil);
-                        }
-                    })
-                  
-                }
-            });
-            body.on('drop', (pointer,target) => {
-                console.log("dropped");
-                //console.log("(" + Math.floor(body.x) + "," + Math.floor(body.y) + ")");
-                if(target === bodyCirc){
-                    //console.log("dropped on head!");
-                    this.tweens.add({
-                        targets: body,
-                        duration: 100,
-                        x: 783,
-                        y: 715,
-                        onComplete: function(){
-                            console.log("done");
-                            body.disableInteractive();
-                            meV2.keyFull.add(body);
-                            body.x = 783 - 700,
-                            body.y = 715 - 700,
-                            count++;
-                            meV2.checkCount(count, meV2.keyFull, stencil);
-                        }
-                    })
-                    
-                }
-            });
-            blade.on('drop', (pointer,target) => {
-                //console.log("dropped");
-                console.log("(" + Math.floor(blade.x) + "," + Math.floor(blade.y) + ")");
-                
-                if(target === bladeCirc){
-                    
-                    //console.log("dropped on head!");
-                    this.tweens.add({
-                        targets: blade,
-                        duration: 100,
-                        x: 839,
-                        y: 672,
-                        onComplete: function(){
-                            console.log("done");
-                            blade.disableInteractive();
-                            meV2.keyFull.add(blade);
-                            blade.x = 839 - 700;
-                            blade.y = 672 - 700;
-                            count++;
-                            meV2.checkCount(count, meV2.keyFull, stencil);
-                        }
-                    })
-                }
-                
-            });
-
-
+            this.scene.start('expos');
         }else{
 
         var b1 = this.add.follower(path1, 900, 500, 'puz1');
@@ -1011,7 +1063,7 @@ const game = new Phaser.Game({
         width: 1920,
         height: 1080
     },
-    scene: [ Intro,ThirdPuzzle, SecondPuzzle, FirstPuzzle,Menu,  Demo2, Outro, Demo1,keyBreak],
+    scene: [ Expos,Intro, ThirdPuzzle, SecondPuzzle, FirstPuzzle,Menu,  Demo2, Outro, Demo1,keyBreak],
     title: "Adventure Game",
 });
 
