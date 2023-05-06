@@ -91,6 +91,12 @@ class Demo2 extends AdventureScene {
             .on('pointerdown', () => this.gotoScene('outro'));
     }
 }
+let foundMap = new Map();
+let objs = ['glasses','hat', 'bicycle', 'horn', 'bone', 'bride', 'dove', 'oop', 'shotgun', 'pet', 'head','caution','dogcat', 'rooster', 'squirrel', 'kittens', 'six', 'bear', 'bird', 'goose'];
+for(val in objs){
+    //console.log(objs[val]);
+    foundMap.set(objs[val], 0);
+}
 
 class Intro extends Phaser.Scene {
     constructor() {
@@ -188,7 +194,7 @@ class keyBreak extends AdventureScene{
             paused: true 
         });
         let myvar = this;
-        console.log(myvar)
+        //console.log(myvar)
         let brk3 = this.tweens.add({
             targets: blade,
             x:  1000 * (Math.random() + 0.3) ,
@@ -229,15 +235,32 @@ class Menu extends AdventureScene{
     }
 
     keyFlyAway(container, stencil){
-        console.log("running Fly");
-        myText.setText("Congratulations!"); 
+        //console.log("running Fly");
+        myText.setText("Good Job!"); 
         this.loseItem("Key Head");
         this.loseItem("Key Body");
         this.loseItem("Key Blade");
+
+        let me = this;
+        let moveUp = this.tweens.add({
+            delay: 200,
+            targets: container,
+            duration: 3000,
+            paused: true,
+            y: -1000,
+            ease: 'circ.easeIn',
+            onComplete: function(){
+                me.cameras.main.fade(this.transitionDuration, 255, 255, 255);
+            }
+        });
+
         this.tweens.add({
             targets: container,
             duration: 3000,
             scale: 2,
+            onComplete: function(){
+                moveUp.paused = false;
+            }
         });
         this.tweens.add({
             targets: stencil,
@@ -245,13 +268,15 @@ class Menu extends AdventureScene{
             alpha: 0
         });
 
+        
+
     }
 
     
     onEnter(){
         Window.scene = this; 
         this.cameras.main.setBackgroundColor('#EAEAEA');
-        console.log(this.hasItem("Key Head"));
+        //console.log(this.hasItem("Key Head"));
         //based off of https://phaser.discourse.group/t/how-to-create-circular-movement-motion-for-a-gameobject-with-arcade-physics/8324/4
         var graphics = this.add.graphics().lineStyle(1, 0xFF0000, 0.5);
         // A circle curve starts at angle 0, the "3 o'clock" position.
@@ -630,46 +655,47 @@ class FirstPuzzle extends AdventureScene{
         //         });
         //     });
         if(puzzle1Solved == 0){
+
+            
         let textBox = this.add.container(40,950);
         let iSpy = this.add.text(0,0, "I spy: ", {color: 0xFFF, fontSize: '75px', bold: true});
         textBox.add(iSpy);
 
+        if(foundMap.get('glasses') == 0){
         let Glasses = this.add.text(270,10, "Glasses without a face,", {fontSize: '30px',color: 0xFFF});
+        textBox.add(Glasses);let glasses = this.add.circle(330,840, 20, 0xff0000);
+        this.setupObject(glasses, Glasses, "glasses", "Glasses without a face!");}
+
+        if(foundMap.get('hat') == 0){
         let Hat = this.add.text(700,10, "an upside down top hat,", {fontSize: '30px',color: 0xFFF});
-        let TRICICLE = this.add.text(1120,10, "a bicycle,", {fontSize: '30px',color: 0xFFF});
+        textBox.add(Hat);let hat = this.add.circle(1111,331,20,0xff0000);
+        this.setupObject(hat, Hat, "hat", "An upside down top hat!");}
+
+        if(foundMap.get('bicycle') == 0){
+        let Bicycle = this.add.text(1120,10, "a bicycle,", {fontSize: '30px',color: 0xFFF});
+        textBox.add(Bicycle);let bicycle = this.add.circle(461, 362, 50, 0xff0000);
+        this.setupObject(bicycle, Bicycle, "bicycle", "A Bicycle!");}
+
+        if(foundMap.get('horn') == 0){
         let Horn = this.add.text(273,50, "a horn,", {fontSize: '30px',color: 0xFFF});
+        textBox.add(Horn);let horn = this.add.circle(281,504,40,0xff0000);
+        this.setupObject(horn,Horn,"horn", "A Horn!");}
+
+        if(foundMap.get('bone') == 0){
         let Bone = this.add.text(393,50, " a dogs bone,", {fontSize: '30px',color: 0xFFF});
+        textBox.add(Bone);let bone = this.add.circle(956, 814,20,0xff0000);
+        this.setupObject(bone, Bone, "bone", "A Bicycle!");}
+
+        if(foundMap.get('bride') == 0){
         let Bride = this.add.text(630,50, "a bride and groom,", {fontSize: '30px',color: 0xFFF});
+        textBox.add(Bride);let bride = this.add.circle(333, 556, 50, 0xff0000);
+        this.setupObject(bride, Bride, "bride", "A Bride and Groom!");}
+
+        if(foundMap.get('dove') == 0){
         let Dove = this.add.text(960,50, "a dove,", {fontSize: '30px',color: 0xFFF});
-        textBox.add(Glasses);
-        textBox.add(Hat);
-        textBox.add(TRICICLE);
-        textBox.add(Horn);
-        textBox.add(Bone);
-        textBox.add(Bride);
-        textBox.add(Dove);
-        {
-        let glasses = this.add.circle(330,840, 20, 0xff0000);
-        this.setupObject(glasses, Glasses, "glasses", "Glasses without a face!");
+        textBox.add(Dove);let dove = this.add.circle(712,543,20,0xff0000);
+        this.setupObject(dove, Dove, "dove", "A dove!");}
 
-        let hat = this.add.circle(1111,331,20,0xff0000);
-        this.setupObject(hat, Hat, "hat", "An upside down top hat!");
-
-        let bone = this.add.circle(956, 814,20,0xff0000);
-        this.setupObject(bone, Bone, "bone", "A Bicycle!");
-
-        let dove = this.add.circle(712,543,20,0xff0000);
-        this.setupObject(dove, Dove, "dove", "A dove!");
-
-        let horn = this.add.circle(281,504,40,0xff0000);
-        this.setupObject(horn,Horn,"horn", "A Horn!");
-
-        let bicycle = this.add.circle(461, 362, 50, 0xff0000);
-        this.setupObject(bicycle, TRICICLE, "bicycle", "A Bicycle!");
-
-        let bride = this.add.circle(333, 556, 50, 0xff0000);
-        this.setupObject(bride, Bride, "bride", "A Bride and Groom!");
-        }
 
         this.input.on('pointerdown', (mouse) => console.log(Math.floor(mouse.x) + "," + Math.floor(mouse.y)));
         }
@@ -766,45 +792,36 @@ class SecondPuzzle extends AdventureScene{
         let iSpy = this.add.text(0,0, "I spy: ", {color: 0xFFF, fontSize: '75px', bold: true});
         textBox.add(iSpy);
 
+
+        if(foundMap.get('oop') == 0){
         let Oop = this.add.text(270,10, "OOP,", {fontSize: '30px',color: 0xFFF});
+        textBox.add(Oop);let oop = this.add.circle(1322,465, 20, 0xff0000);this.setupObject2(oop, Oop, "oop", "OOP!");
+}
+        if(foundMap.get('shotgun') == 0){
         let Shotgun = this.add.text(350, 10, "a shotgun,", {fontSize: '30px',color: 0xFFF});
+        textBox.add(Shotgun);let shotgun = this.add.circle(358,820, 30, 0xff0000);this.setupObject2(shotgun,Shotgun, "shotgun", "A Shotgun!");}
+
+
+        if(foundMap.get('pet') == 0){
         let Pet = this.add.text(540, 10, "a flattened pet,", {fontSize: '30px',color: 0xFFF});
+        textBox.add(Pet);let pet = this.add.circle(1133,745, 20, 0xff0000);this.setupObject2(pet, Pet, "pet", "A flattened cat!");}
+
+        if(foundMap.get('head') == 0){
         let Head = this.add.text(840, 10, "a head with no body,", {fontSize: '30px',color: 0xFFF});
+        let head = this.add.circle(590,410, 25, 0xff0000);textBox.add(Head);this.setupObject2(head,Head, "head", "A head with no body!");}
+
+        if(foundMap.get('caution') == 0){
         let Caution = this.add.text(270, 50, "CAUTION,", {fontSize: '30px',color: 0xFFF});
+        textBox.add(Caution);let caution = this.add.circle(1013,317, 30, 0xff0000);        this.setupObject2(caution,Caution, "caution", "CAUTION!");}
+
+        if(foundMap.get('dogcat') == 0){
         let Dogcat = this.add.text(420, 50, "a dog chasing a cat,", {fontSize: '30px',color: 0xFFF});
+        textBox.add(Dogcat);let dogcat = this.add.circle(1226,399, 40, 0xff0000);this.setupObject2(dogcat,Dogcat, "dogcat", "A dog chasing a cat!");}
+
+        if(foundMap.get('rooster') == 0){
         let Rooster = this.add.text(800, 50, "and a rooster.", {fontSize: '30px',color: 0xFFF});
-
-
-
-        textBox.add(Oop);
-        textBox.add(Shotgun);
-        textBox.add(Pet);
-        textBox.add(Head);
-        textBox.add(Caution);
-        textBox.add(Dogcat);
-        textBox.add(Rooster);
-
-        {
-        let oop = this.add.circle(1322,465, 20, 0xff0000);
-        let shotgun = this.add.circle(358,820, 30, 0xff0000);
-        let pet = this.add.circle(1133,745, 20, 0xff0000);
-        let head = this.add.circle(590,410, 25, 0xff0000);
-        let caution = this.add.circle(1013,317, 30, 0xff0000);
-        let dogcat = this.add.circle(1226,399, 40, 0xff0000);
-        let rooster = this.add.circle(59,344, 40, 0xff0000);
-
-        this.setupObject(oop, Oop, "oop", "OOP!");
-        this.setupObject(shotgun,Shotgun, "shotgun", "A Shotgun!");
-        this.setupObject(pet, Pet, "pet", "A flattened cat!");
-        this.setupObject(head,Head, "head", "A head with no body!");
-        this.setupObject(caution,Caution, "caution", "CAUTION!");
-        this.setupObject(dogcat,Dogcat, "dogcat", "A dog chasing a cat!");
-        this.setupObject(rooster,Rooster,"rooster", "A Rooster!");
-
-
-
-
-        }
+        textBox.add(Rooster);let rooster = this.add.circle(59,344, 40, 0xff0000);this.setupObject2(rooster,Rooster,"rooster", "A Rooster!");}
+        
 
         this.input.on('pointerdown', (mouse) => console.log(Math.floor(mouse.x) + "," + Math.floor(mouse.y)));
         }
@@ -897,41 +914,32 @@ class ThirdPuzzle extends AdventureScene{
         let textBox = this.add.container(40,950);
         let iSpy = this.add.text(0,0, "I spy: ", {color: 0xFFF, fontSize: '75px', bold: true});
         textBox.add(iSpy);
-
+        
+        if(foundMap.get('squirrel') == 0){
         let Squirrel = this.add.text(270,10, "Three squirrels in a line,", {fontSize: '30px',color: 0xFFF});
+        textBox.add(Squirrel);let squirrel = this.add.ellipse(261,125, 300, 60, 0x0000FF);this.setupObject3(squirrel, Squirrel, "squirrel", "Three squirrels running in a line!");}
+
+        if(foundMap.get('kittens') == 0){
         let Kittens = this.add.text(750,10, "two kittens hiding,", {fontSize: '30px',color: 0xFFF});
+        textBox.add(Kittens);let kittens = this.add.circle(201,912, 30, 0xFF0000);this.setupObject3(kittens, Kittens, "kittens", "Two sneaky kittens!");}
+
+        if(foundMap.get('six') == 0){
         let Six = this.add.text(1100,10, "The number six,", {fontSize: '30px',color: 0xFFF});
+        textBox.add(Six);let six = this.add.circle(892,220, 30, 0xFF0000);this.setupObject3(six,Six,"six", "The number six!");}
+
+        if(foundMap.get('bear') == 0){
         let Bear = this.add.text(270, 40, "a bear in overalls,",{fontSize: '30px',color: 0xFFF});
+        textBox.add(Bear);let bear = this.add.circle(1267,194, 40, 0xFF0000);this.setupObject3(bear,Bear,"bear", "A bear in overalls!");}
+
+        if(foundMap.get('bird') == 0){
         let Bird = this.add.text(620, 40, "a bird perched on a light,",{fontSize: '30px',color: 0xFFF});
+        textBox.add(Bird);let bird = this.add.circle(512,432, 30, 0xFF0000);this.setupObject3(bird,Bird,"bird", "A bird perched on a light!");
+}   
+        if(foundMap.get('goose') == 0){
         let Goose = this.add.text(1090, 40, "a hat on a goose,",{fontSize: '30px',color: 0xFFF});
+        textBox.add(Goose);let goose = this.add.circle(1114,598,20, 0x0000FF);this.setupObject3(goose,Goose, "goose", "A backwards hat on a goose!");}
 
 
-        textBox.add(Squirrel);
-        textBox.add(Kittens);
-        textBox.add(Six);
-        textBox.add(Bear);
-        textBox.add(Bird);
-        textBox.add(Goose);
-
-        {
-        let squirrel = this.add.ellipse(261,125, 300, 60, 0x0000FF);
-        let kittens = this.add.circle(201,912, 30, 0xFF0000);
-        let six = this.add.circle(892,220, 30, 0xFF0000);
-        let bear = this.add.circle(1267,194, 40, 0xFF0000);
-        let bird = this.add.circle(512,432, 30, 0xFF0000);
-        let goose = this.add.circle(1114,598,20, 0x0000FF);
-
-        this.setupObject(squirrel, Squirrel, "squirrel", "Three squirrels running in a line!");
-        this.setupObject(kittens, Kittens, "kittens", "Two sneaky kittens!");
-        this.setupObject(six,Six,"six", "The number six!");
-        this.setupObject(bear,Bear,"bear", "A bear in overalls!");
-        this.setupObject(bird,Bird,"bird", "A bird perched on a light!");
-        this.setupObject(goose,Goose, "goose", "A backwards hat on a goose!");
-
-
-
-
-        }
         let myself = this;
 
         this.input.on('pointerdown', (mouse) => console.log(Math.floor(mouse.x) + "," + Math.floor(mouse.y)));
@@ -1003,7 +1011,7 @@ const game = new Phaser.Game({
         width: 1920,
         height: 1080
     },
-    scene: [ThirdPuzzle, SecondPuzzle, FirstPuzzle,Menu, Intro,  Demo2, Outro, Demo1,keyBreak],
+    scene: [ Intro,ThirdPuzzle, SecondPuzzle, FirstPuzzle,Menu,  Demo2, Outro, Demo1,keyBreak],
     title: "Adventure Game",
 });
 

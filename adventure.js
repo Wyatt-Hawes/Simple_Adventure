@@ -134,8 +134,63 @@ class AdventureScene extends Phaser.Scene {
             this.showMessage(message);
             if (map1.get(name) == 0){
                 map1.set(name, 1);
+                foundMap.set(name, 1);
                 letNumFound1++;
                 console.log(letNumFound1);
+            }
+            //console.log("found object");
+            this.tweens.add({
+                targets: Circ,
+                alpha: 0,
+                duration: 3000,
+            });
+            this.tweens.add({
+                targets: circ,
+                alpha: .40,
+                duration: 1000,
+            })
+        });
+    }
+    setupObject2(circ, Circ, name, message){
+        let me = this;
+        map1.set(name, 0);
+        circ.setInteractive();
+        circ.setAlpha(.000001);
+        console.log(circ);
+        circ.on('pointerdown', () =>{
+            this.showMessage(message);
+            if (map1.get(name) == 0){
+                map1.set(name, 1);
+                foundMap.set(name, 1);
+                letNumFound2++;
+                console.log(letNumFound2);
+            }
+            //console.log("found object");
+            this.tweens.add({
+                targets: Circ,
+                alpha: 0,
+                duration: 3000,
+            });
+            this.tweens.add({
+                targets: circ,
+                alpha: .40,
+                duration: 1000,
+            })
+        });
+    }
+    setupObject3(circ, Circ, name, message){
+        let me = this;
+        map1.set(name, 0);
+        circ.setInteractive();
+        circ.setAlpha(.000001);
+        console.log(circ);
+        circ.on('pointerdown', () =>{
+            this.showMessage(message);
+            if (map1.get(name) == 0){
+                map1.set(name, 1);
+                foundMap.set(name, 1);
+                letNumFound3++;
+                console.log(letNumFound3);
             }
             //console.log("found object");
             this.tweens.add({
